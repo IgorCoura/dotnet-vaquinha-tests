@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
 using Xunit;
 using Vaquinha.Tests.Common.Fixtures;
+using Vaquinha.Domain.Entities;
+using System;
 
 namespace Vaquinha.Unit.Tests.DomainTests
 {
@@ -164,6 +166,27 @@ namespace Vaquinha.Unit.Tests.DomainTests
 
             doacao.ErrorMessages.Should().Contain("Valor mínimo de doação é de R$ 5,00", because: "valor mínimo de doação nao foi atingido.");            
             doacao.ErrorMessages.Should().Contain("O campo Email é obrigatório.", because: "o campo Email não foi informado.");            
+        }
+
+        [Fact]
+        [Trait("Doacao", "Doacao_TestDeFuncoesNaoContempladosPorOutrosTestes")]
+        public void Doacao_TestDeFuncoesNaoContempladosPorOutrosTestes()
+        {
+            //Arrage
+            var doacao = new Doacao(Guid.Empty, Guid.Empty, Guid.Empty, 10, null, null, null);
+
+            //Act
+            var dadosPessoaisId = doacao.DadosPessoaisId;
+            var dataHora = doacao.DataHora;
+            var enderecoCobrancaId = doacao.EnderecoCobrancaId;
+            doacao.AdicionarPessoa(null);
+
+            //Assert
+            dadosPessoaisId.Should().BeEmpty();
+            dataHora.Should().BeCloseTo(DateTime.Now);
+            dadosPessoaisId.Should().BeEmpty();
+            doacao.DadosPessoais.Should().BeNull();
+
         }
 
     }
